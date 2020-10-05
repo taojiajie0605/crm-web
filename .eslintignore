@@ -1,0 +1,5 @@
+back
+.vscode/*
+.history
+dist
+node_modules

@@ -1,0 +1,54 @@
+kind: pipeline
+type: docker
+name: default
+
+platform:
+    os: linux
+    arch: amd64
+
+steps:
+    - name: build
+      image: node:alpine
+      commands:
+          - yarn config set registry https://registry.npm.taobao.org/
+          - yarn
+          - cp .env .env.production
+          - yarn build
+          - mv dist web
+
+    - name: clear
+      image: appleboy/drone-ssh
+      settings:
+          host: lichnow.com
+          username: root
+          port: 22
+          key:
+              from_secret: ssh_key
+          script:
+              - rm -rf /data/wwwroot/zcloud/web
+    - name: deploy
+      image: appleboy/drone-scp
+      settings:
+          host: lichnow.com
+          username: root
+          port: 22
+          key:
+              from_secret: ssh_key
+          target: /data/wwwroot/zcloud
+          source: ./web
+    - name: publish
+      image: appleboy/drone-ssh
+      settings:
+          host: lichnow.com
+          username: root
+          port: 22
+          key:
+              from_secret: ssh_key
+          script:
+              - chown -R www.www /data/wwwroot/
+              - find /data/wwwroot/ -type d -exec chmod 755 {} \;
+              - find /data/wwwroot/ -type f -exec chmod 644 {} \;
+
+trigger:
+    branch:
+        - master

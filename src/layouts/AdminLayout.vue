@@ -1,0 +1,184 @@
+<template>
+    <div>
+        <!-- <admin-header :style="headerStyle" :menuData="topMenuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse"/> -->
+        <a-layout
+            :class="['admin-layout', fixedSideBar ? 'fixed-side-bar' : '']"
+        >
+            <drawer v-if="isMobile" v-model="collapsed">
+                <side-menu
+                    :theme="theme.mode"
+                    :menuData="menuData"
+                    :collapsed="false"
+                    :collapsible="false"
+                    @menuSelect="onMenuSelect"
+                />
+            </drawer>
+            <side-menu
+                class="beauty-scroll"
+                :theme="theme.mode"
+                v-else-if="layout === 'side'"
+                :menuData="menuData"
+                :collapsed="collapsed"
+                :collapsible="true"
+            />
+            <drawer v-if="!hideSetting" v-model="showSetting" placement="right">
+                <div class="setting" slot="handler">
+                    <a-icon :type="showSetting ? 'close' : 'setting'" />
+                </div>
+                <setting />
+            </drawer>
+            <a-layout class="admin-layout-main beauty-scroll">
+                <!-- <admin-header :style="headerStyle" :menuData="menuData" :collapsed="collapsed" @toggleCollapse="toggleCollapse"/> -->
+                <a-layout-header v-if="fixedHeader" />
+                <a-layout-content class="admin-layout-content">
+                    <div
+                        :style="`min-height: ${minHeight}px; position: relative`"
+                    >
+                        <slot></slot>
+                    </div>
+                </a-layout-content>
+                <a-layout-footer style="padding: 0px;">
+                    <page-footer
+                        :link-list="footerLinks"
+                        :copyright="copyright"
+                    />
+                </a-layout-footer>
+            </a-layout>
+        </a-layout>
+    </div>
+</template>
+
+<script>
+// import AdminHeader from './header/AdminHeader'
+import PageFooter from './footer/PageFooter';
+import Drawer from '../components/tool/Drawer';
+import SideMenu from '../components/menu/SideMenu';
+import Setting from '../components/setting/Setting';
+import { mapState } from 'vuex';
+
+const minHeight = window.innerHeight - 64 - 24 - 122;
+
+export default {
+    name: 'AdminLayout',
+    components: { Setting, SideMenu, Drawer, PageFooter /*AdminHeader*/ },
+    data() {
+        return {
+            minHeight: minHeight,
+            collapsed: false,
+            menuData: [],
+            showSetting: false,
+        };
+    },
+    provide() {
+        return {
+            layoutMinHeight: minHeight,
+        };
+    },
+    computed: {
+        ...mapState('setting', [
+            'isMobile',
+            'theme',
+            'layout',
+            'footerLinks',
+            'copyright',
+            'fixedHeader',
+            'fixedSideBar',
+            'hideSetting',
+        ]),
+        // sideMenuWidth() {
+        //   return this.collapsed ? '80px' : '208px'
+        // },
+        headerStyle() {
+            const width =
+                this.fixedHeader && this.layout == 'side' && !this.isMobile
+                    ? `calc(100% - ${this.sideMenuWidth})`
+                    : '100%';
+            const position = this.fixedHeader ? 'fixed' : 'static';
+            const transition = this.fixedHeader ? 'transition: width 0.2s' : '';
+            return `width: ${width}; position: ${position}; ${transition}`;
+        },
+    },
+    methods: {
+        toggleCollapse() {
+            this.collapsed = !this.collapsed;
+        },
+        onMenuSelect() {
+            this.toggleCollapse();
+        },
+    },
+    beforeCreate() {},
+    created() {
+        if (this.$route.path.split('/')[1] === 'admin') {
+            // 表示是后台登录
+            this.menuData = this.$router.options.routes
+                .find((item) => item.path === '/')
+                .children.find((item) => item.path === '/admin').children;
+        } else {
+            // 前台登录
+            this.menuData = this.$router.options.routes
+                .find((item) => item.path === '/')
+                .children.find(
+                    (item) =>
+                        item.path === '/' + this.$route.path.split('/')[1],
+                ).children;
+        }
+    },
+    watch: {
+        // '$store.state.setting.currentRouter': function () {
+        //     //console.log(this.$route.path);
+        //     //你需要执行的代码
+        // },
+        $route(/*to, from*/) {
+            // console.log(to)
+            // console.log(from)
+            if (this.$route.path.split('/')[1] === 'admin') {
+                // 表示是后台登录
+                this.menuData = this.$router.options.routes
+                    .find((item) => item.path === '/')
+                    .children.find((item) => item.path === '/admin').children;
+            } else {
+                // 前台登录
+                this.menuData = this.$router.options.routes
+                    .find((item) => item.path === '/')
+                    .children.find(
+                        (item) =>
+                            item.path === '/' + this.$route.path.split('/')[1],
+                    ).children;
+            }
+        },
+    },
+};
+</script>
+
+<style lang="less" scoped>
+.admin-layout {
+    margin-top: 48px;
+    &.fixed-side-bar {
+        height: 100vh;
+        .admin-layout-main {
+            overflow: scroll;
+        }
+    }
+    .admin-layout-main {
+        margin-left: 208px;
+        .admin-header {
+            top: 0;
+            right: 0;
+        }
+    }
+    .admin-layout-content {
+        padding: 24px 24px 0;
+        min-height: auto;
+    }
+    .setting {
+        background-color: @primary-color;
+        color: @base-bg-color;
+        border-radius: 5px 0 0 5px;
+        line-height: 40px;
+        font-size: 22px;
+        width: 40px;
+        height: 40px;
+        box-shadow: -2px 0 8px @shadow-color;
+    }
+}
+</style>

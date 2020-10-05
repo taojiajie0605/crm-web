@@ -1,0 +1,80 @@
+module.exports = {
+    root: true,
+    env: {
+        browser: true,
+        node: true,
+        es6: true,
+    },
+    extends: [
+        'plugin:vue/strongly-recommended',
+        'eslint:recommended',
+        'prettier/vue',
+        'plugin:prettier/recommended',
+    ],
+    parserOptions: {
+        parser: 'babel-eslint',
+    },
+    plugins: ['prettier'],
+    rules: {
+        'prettier/prettier': 'warn',
+        'no-console': 0,
+        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+        'no-unused-vars': 0,
+        'array-bracket-spacing': 2,
+        'no-var': 2,
+        'no-eval': 0,
+        'arrow-spacing': 2,
+        'block-spacing': 2,
+        'key-spacing': 2,
+        'brace-style': 2,
+        'no-prototype-builtins': 0,
+        'no-delete-var': 2,
+        'prefer-const': [
+            2,
+            {
+                ignoreReadBeforeAssign: false,
+            },
+        ],
+        'template-curly-spacing': 'off',
+        'vue/no-template-shadow': 'off',
+        'vue/camelcase': 2,
+        'vue/require-component-is': 0,
+        'vue/require-default-prop': 0,
+        'vue/eqeqeq': [2, 'always', { null: 'ignore' }],
+        'object-curly-spacing': [2, 'always'],
+        'no-mixed-operators': 0,
+        'vue/attribute-hyphenation': 0,
+        'vue/component-name-in-template-casing': 0,
+        'vue/html-closing-bracket-spacing': 0,
+        'vue/singleline-html-element-content-newline': 0,
+        'vue/no-unused-components': 0,
+        'vue/multiline-html-element-content-newline': 0,
+        'vue/no-use-v-if-with-v-for': 0,
+        'vue/html-closing-bracket-newline': 0,
+        'vue/no-parsing-error': 0,
+        'vue/require-prop-types': 0,
+        'vue/html-self-closing': [
+            2,
+            {
+                html: {
+                    void: 'always',
+                    normal: 'never',
+                    component: 'always',
+                },
+                svg: 'always',
+                math: 'always',
+            },
+        ],
+    },
+    overrides: [
+        {
+            files: [
+                '**/__tests__/*.{j,t}s?(x)',
+                '**/tests/unit/**/*.spec.{j,t}s?(x)',
+            ],
+            env: {
+                jest: true,
+            },
+        },
+    ],
+};

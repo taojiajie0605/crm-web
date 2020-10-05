@@ -1,0 +1,61 @@
+.week-mode{
+  overflow: hidden;
+  filter: invert(80%);
+}
+.beauty-scroll{
+  scrollbar-color: @primary-color @primary-2;
+  scrollbar-width: thin;
+  -ms-overflow-style:none;
+  position: relative;
+  &::-webkit-scrollbar{
+    width: 3px;
+    height: 1px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: @primary;
+  }
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0);
+    border-radius: 3px;
+    background: @primary-3;
+  }
+}
+/deep/.ant-table-body {
+  scrollbar-color: rgba(95, 95, 95, 0.4) rgba(95, 95, 95, 0.4);
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+  position: relative;
+  &::-webkit-scrollbar {
+      width: 3px;
+      height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #c7d1da;
+    -webkit-border-radius: 2em;
+    -moz-border-radius: 2em;
+    border-radius: 2em;
+
+    &:hover {
+        background-color: rgba(95, 95, 95, 0.7);
+    }
+  }
+  &::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0);
+      -moz-border-radius: 2em;
+      border-radius: 2em;
+  }
+}
+.split-right{
+  &:not(:last-child) {
+    border-right: 1px solid rgba(98, 98, 98, 0.2);
+  }
+}
+.ant-btn-primary{
+  &:extend(.ant-btn-primary);
+  border-radius: 2px;
+}
+.ant-drawer-mask{
+  &:extend(.ant-drawer-mask);
+  background:transparent;
+}
